@@ -9,6 +9,7 @@ from telegram.ext import (
 )
 from telegram import Update
 from dotenv import load_dotenv
+from handlers import start_command, handle_query, error
 
 BOT_USERNAME: Final = "@WolframHelperrrBot"
 
