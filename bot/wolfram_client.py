@@ -7,39 +7,37 @@ def query_wolfram(query: str) -> str:
     url = "http://api.wolframalpha.com/v2/query"
 
     params = {
-        "input":query,
-        "format":"plaintext,latex",
-        "output":"JSON",
-        "appid":app_id
+        "input": query,
+        "format": "plaintext,latex",
+        "output": "JSON",
+        "appid": app_id,
     }
-    res = requests.get(url,params=params).json()
-    
+    res = requests.get(url, params=params).json()
+
     try:
         pods = res["queryresult"]["pods"]
         for pod in pods:
-            if "plaintext" in pod["subpods"][0]:
-                return pod["subpods"][0]["plaintext"]
-        return "No results found"
+            subpod = pod["subpods"][0]
+            if "latex" in subpod and subpod["latex"].strip():
+                return {"latex": subpod["latex"]}
+            elif "plaintext" in subpod and["latex"].strip():
+                return {"plaintex": subpod["plaintext"]}
+        return {"error":"No results found"}
     except Exception:
-        return "Error processing in query"
-    
-    
-    
-    
-    # params = {
-    #     "input": query,
-    #     "format": "plaintext",
-    #     "output": "JSON",
-    #     "appid": app_id
-    # }
+        return {"error":"Error processing in query"}
 
-    # res = requests.get(url, params=params).json()
-
-    # try:
-    #     pods = res["queryresult"]["pods"]
-    #     for pod in pods:
-    #         if "plaintext" in pod["subpods"][0]:
-    #             return pod["subpods"][0]["plaintext"]
-    #     return "No result found."
-    # except Exception:
-    #     return "Error processing the query."
+# {
+#   "queryresult": {
+#     "pods": [
+#       {
+#         "title": "Result",
+#         "subpods": [
+#           {
+#             "plaintext": "x^2 + y^2",
+#             "latex": "x^{2}+y^{2}"
+#           }
+#         ]
+#       }
+#     ]
+#   }
+# }
